@@ -2,11 +2,12 @@
 
 ## 判定
 
-2026-10-17 時点: **準備実装 PASS / 実 Activation BLOCKED**。
+2026-10-21 時点: **準備実装 PASS / 実 Activation BLOCKED / stable Formula disabled**。
 
 ## 準備済みの境界
 
 - public Tap は `Formula/crewent.rb`、公開文書、secret-free `validate.yml` だけを所有し、compatibility Formula / rename metadata を持たない。
+- stable Formula は未公開の source artifact URL を保持するが、`disable!` により install を download 前に停止する。存在しない artifact の 404 を利用者向け availability 表示にしない。
 - workflow policy test は追加 workflow、write / package permission、secret参照、artifact transfer、mutationを拒否する。
 - manual public smoke は repository ID、public visibility、default branch、exact main SHA、raw Formula digest、anonymous `git clone --no-tags`、anonymous `brew tap` を検証する。
 - private source read、bottle build / publish、private GHCR read-back、candidate draft PR、3 target distribution canary、final activation検証は private `zoe-llc/crewent-distribution` が所有する。
@@ -37,3 +38,5 @@ git diff --check
 - stable Formula PRのCI、review、明示merge
 
 これらは実 run ID、exact SHA / digest、artifact URLを取得してから別のPhase 0 evidenceへ記録します。Windows / WSL2は初回blocking targetではなく未検証です。
+
+`disable!` の解除は、上記の全10 Gateが同じ release identityで `PASS` になった candidate Formula PRの一部としてだけ行います。単独の文書更新、source Release作成、bottleの一部成功では解除しません。

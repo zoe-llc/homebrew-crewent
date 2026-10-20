@@ -4,7 +4,9 @@ Crewent CLI の Formula-only Homebrew Tap です。Formula と credential-free �
 
 ## 現在の状態
 
-2026-10-17 時点では repository ID `1414534332` を維持した public Formula-only Tap として準備済みです。Release、tag、GHCR package、実 canary、stable Formula promotion は実施していません。
+2026-10-21 時点では repository ID `1414534332` を維持した public Formula-only Tap として準備済みです。Release、tag、GHCR package、実 canary、stable Formula promotion は実施していません。
+
+未公開の `cli-v0.1.0` asset URL を Homebrew が取得して 404 に進まないよう、現在の Formula は `disable!` で未提供状態を明示します。3 target bottle、private GHCR access、distribution / product canary、全10 Gateの証拠が揃った candidate PR を明示的に mergeするときだけ、この停止を解除します。
 
 tracked code が保持する実行面は secret-free な `.github/workflows/validate.yml` だけで、repository secret は 0 件です。次の capability は private [`zoe-llc/crewent-distribution`](https://github.com/zoe-llc/crewent-distribution) が所有します。
 
