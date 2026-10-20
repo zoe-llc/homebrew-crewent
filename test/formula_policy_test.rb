@@ -25,4 +25,13 @@ class FormulaPolicyTest < Minitest::Test
     refute_match(/secrets\.|GH_TOKEN|GITHUB_TOKEN|HOMEBREW_GITHUB_API_TOKEN/, source)
     refute_match(/system\s+['"](?:curl|git|gh)['"]/, source)
   end
+
+  def test_formula_is_disabled_until_internal_distribution_activation
+    source = File.read(FORMULA)
+
+    assert_match(
+      /disable!\s+date:\s*"2026-10-21",\s*because:\s*"has no activated internal 0\.1\.0 distribution"/,
+      source
+    )
+  end
 end

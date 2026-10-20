@@ -2,7 +2,7 @@
 
 ## 現在の状態
 
-2026-10-17 時点では Tap `zoe-llc/homebrew-crewent` は public Formula-only surface として準備済みで、Release、GHCR package、実 canary、stable promotion は未実行です。この文書の install 手順は Internal Activation 後にだけ利用します。
+2026-10-21 時点では Tap `zoe-llc/homebrew-crewent` は public Formula-only surface として準備済みで、Release、GHCR package、実 canary、stable promotion は未実行です。stable Formula は `disable!` により未提供状態を明示し、未公開 artifact URL の download を開始しません。この文書の install 手順は Internal Activation 後にだけ利用します。
 
 Tap が匿名公開するのは Formula と公開可能な digest / evidence だけです。compatibility Formula や rename metadata は保持しません。source repository、Release asset、bottle payload は公開しません。Tap の公開は OSS 化や公開ライセンス付与を意味しません。
 
