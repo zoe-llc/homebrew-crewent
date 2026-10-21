@@ -39,4 +39,6 @@ git diff --check
 
 これらは実 run ID、exact SHA / digest、artifact URLを取得してから別のPhase 0 evidenceへ記録します。Windows / WSL2は初回blocking targetではなく未検証です。
 
-`disable!` の解除は、上記の全10 Gateが同じ release identityで `PASS` になった candidate Formula PRの一部としてだけ行います。単独の文書更新、source Release作成、bottleの一部成功では解除しません。
+`disable!` の解除は、上記の全10 Gateが同じ release identityで `PASS` になった candidate Formula PRの一部としてだけ行います。
+
+public Tap の `validate.yml` は、`disable!` ありの stable 未Activation Formula を許可し、`disable!` なしの Formula には bottle metadata・3環境 distribution canary・activation authorization の credential-free evidence が exact 一致した場合だけ PASS します。単独の文書更新、source Release作成、bottleの一部成功では解除しません。
