@@ -27,7 +27,10 @@ class FormulaPolicyTest < Minitest::Test
     refute_match(/system\s+['"](?:curl|git|gh)['"]/, source)
   end
 
-  def test_stable_main_formula_is_disabled_until_activation_evidence_exists
+  def test_disabled_formula_satisfies_activation_policy
+    source = File.read(FORMULA)
+    skip("activated candidate branches are verified by scripts/verify_formula_activation_policy.rb") unless source.match?(/^\s*disable!/m)
+
     PublicTap::FormulaActivationPolicy.verify!(root: ROOT)
   end
 
