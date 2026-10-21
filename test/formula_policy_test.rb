@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "minitest/autorun"
+require_relative "../scripts/verify_formula_activation_policy"
 
 class FormulaPolicyTest < Minitest::Test
   ROOT = File.expand_path("..", __dir__)
@@ -26,12 +27,40 @@ class FormulaPolicyTest < Minitest::Test
     refute_match(/system\s+['"](?:curl|git|gh)['"]/, source)
   end
 
-  def test_formula_is_disabled_until_internal_distribution_activation
-    source = File.read(FORMULA)
+  def test_stable_main_formula_is_disabled_until_activation_evidence_exists
+    PublicTap::FormulaActivationPolicy.verify!(root: ROOT)
+  end
 
-    assert_match(
-      /disable!\s+date:\s*"2026-10-21",\s*because:\s*"has no activated internal 0\.1\.0 distribution"/,
-      source
-    )
+  def test_activated_formula_requires_closed_activation_evidence
+    Dir.mktmpdir do |tmpdir|
+      root = Pathname(tmpdir)
+      write_activated_formula(root)
+      error = assert_raises(PublicTap::FormulaActivationPolicyError) do
+        PublicTap::FormulaActivationPolicy.verify!(root: root)
+      end
+      assert_match(/activation evidence/, error.message)
+    end
+  end
+
+  private
+
+  def write_activated_formula(root)
+    root.join("Formula").mkpath
+    root.join("docs", "verification").mkpath
+    root.join("Formula", "crewent.rb").write(<<~RUBY)
+      # frozen_string_literal: true
+      class Crewent < Formula
+        url "https://github.com/zoe-llc/crewent/releases/download/cli-v0.1.0/crewent-cli-0.1.0.tgz"
+        sha256 "96528ae9b04fd7eaaaec8c54e6978147e0d312b35005f88e686e6023f3967c28"
+        bottle do
+          root_url "https://ghcr.io/v2/zoe-llc/crewent"
+          sha256 cellar: :any_skip_relocation, arm64_sequoia: "e7498089de1b7828bec765c3669e4e17ed1c66440c796c10034cd7c9cdc6d12d"
+          sha256 cellar: :any_skip_relocation, arm64_linux:   "13d85015f4d974936a1aa07f5eb3979e43ee0b28fb1f27e225df1a34168dee06"
+          sha256 cellar: :any_skip_relocation, x86_64_linux:  "397deda99175e8dad1b081eff66ec9b4ddb5ea4753c8d3c40a6403ffbf53a4fb"
+        end
+        def install; end
+        test { }
+      end
+    RUBY
   end
 end
