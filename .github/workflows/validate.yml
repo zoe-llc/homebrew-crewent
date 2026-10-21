@@ -38,6 +38,9 @@ jobs:
           ruby -Itest test/formula_policy_test.rb
           ruby -Itest test/public_repository_policy_test.rb
 
+      - name: Verify Formula activation policy
+        run: ruby scripts/verify_formula_activation_policy.rb
+
       - name: Reject committed credentials
         run: |
           ruby -e '
