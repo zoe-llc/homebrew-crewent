@@ -7,9 +7,15 @@ class Crewent < Formula
   desc "Internal CLI distribution"
   homepage "https://github.com/zoe-llc/crewent"
   url "https://github.com/zoe-llc/crewent/releases/download/cli-v0.1.0/crewent-cli-0.1.0.tgz"
-  sha256 "c7c5c1d70c5dec4416ab6158afd0b223ef40c29b1dc1f97ed9428b94d4cadb1c"
+  sha256 "96528ae9b04fd7eaaaec8c54e6978147e0d312b35005f88e686e6023f3967c28"
   license :cannot_represent
-  disable! date: "2026-10-21", because: "has no activated internal 0.1.0 distribution"
+
+  bottle do
+    root_url "https://ghcr.io/v2/zoe-llc/crewent"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "e7498089de1b7828bec765c3669e4e17ed1c66440c796c10034cd7c9cdc6d12d"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "13d85015f4d974936a1aa07f5eb3979e43ee0b28fb1f27e225df1a34168dee06"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "397deda99175e8dad1b081eff66ec9b4ddb5ea4753c8d3c40a6403ffbf53a4fb"
+  end
 
   depends_on "node@22"
 
