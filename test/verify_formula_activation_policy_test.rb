@@ -29,6 +29,40 @@ class VerifyFormulaActivationPolicyTest < Minitest::Test
     end
   end
 
+  def test_distribution_canary_matches_the_formula_that_was_actually_installed
+    candidate = bottle_candidate(
+      source_formula_sha256: "1" * 64,
+      candidate_formula_sha256: "2" * 64
+    )
+    distribution = distribution_canary(
+      formula_sha256: "2" * 64,
+      candidate_head_sha: "3" * 40
+    )
+
+    PublicTap::FormulaActivationPolicy.verify_distribution_canary!(
+      distribution,
+      candidate: candidate
+    )
+  end
+
+  def test_distribution_canary_keeps_the_pre_finalize_candidate_head
+    candidate = bottle_candidate(
+      source_formula_sha256: "2" * 64,
+      candidate_formula_sha256: "2" * 64
+    )
+    distribution = distribution_canary(
+      formula_sha256: "2" * 64,
+      candidate_head_sha: "3" * 40
+    )
+
+    with_github_sha("4" * 40) do
+      PublicTap::FormulaActivationPolicy.verify_distribution_canary!(
+        distribution,
+        candidate: candidate
+      )
+    end
+  end
+
   private
 
   def disabled_formula
@@ -57,5 +91,44 @@ class VerifyFormulaActivationPolicyTest < Minitest::Test
         FileUtils.cp(path, target)
       end
     end
+  end
+
+  def bottle_candidate(source_formula_sha256:, candidate_formula_sha256:)
+    {
+      "version" => "0.1.1",
+      "sourceSha" => "5" * 40,
+      "authorizationSha" => "6" * 40,
+      "artifactSha256" => "7" * 64,
+      "manifestSha256" => "8" * 64,
+      "sourceFormulaSha256" => source_formula_sha256,
+      "candidateFormulaSha256" => candidate_formula_sha256,
+      "bottleMatrixSha256" => "9" * 64
+    }
+  end
+
+  def distribution_canary(formula_sha256:, candidate_head_sha:)
+    {
+      "schema" => "crewent.homebrew-distribution-canary-matrix/v1",
+      "identity" => {
+        "version" => "0.1.1",
+        "sourceSha" => "5" * 40,
+        "authorizationSha" => "6" * 40,
+        "artifactSha256" => "7" * 64,
+        "manifestSha256" => "8" * 64,
+        "formulaSha256" => formula_sha256,
+        "bottleMatrixSha256" => "9" * 64,
+        "tapRepository" => "zoe-llc/homebrew-crewent",
+        "candidateHeadSha" => candidate_head_sha
+      },
+      "targets" => Array.new(3) { { "status" => "PASS" } }
+    }
+  end
+
+  def with_github_sha(value)
+    previous = ENV.fetch("GITHUB_SHA", nil)
+    ENV["GITHUB_SHA"] = value
+    yield
+  ensure
+    ENV["GITHUB_SHA"] = previous
   end
 end

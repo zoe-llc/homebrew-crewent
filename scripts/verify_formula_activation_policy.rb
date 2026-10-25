@@ -149,14 +149,11 @@ module PublicTap
       end
       equal!(
         identity.fetch("formulaSha256"),
-        candidate.fetch("sourceFormulaSha256"),
+        candidate.fetch("candidateFormulaSha256"),
         "distribution-canary.identity.formulaSha256"
       )
       equal!(identity.fetch("tapRepository"), "zoe-llc/homebrew-crewent", "distribution-canary.identity.tapRepository")
       pattern!(identity.fetch("candidateHeadSha"), COMMIT, "distribution-canary.identity.candidateHeadSha")
-      if (head = ENV.fetch("GITHUB_SHA", "").strip) && COMMIT.match?(head)
-        equal!(identity.fetch("candidateHeadSha"), head, "distribution-canary.identity.candidateHeadSha")
-      end
 
       targets = value.fetch("targets")
       fail!("distribution-canary must contain exactly three PASS targets") unless targets.is_a?(Array) && targets.length == 3

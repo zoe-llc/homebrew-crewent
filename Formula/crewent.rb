@@ -6,10 +6,16 @@ require "json"
 class Crewent < Formula
   desc "Internal CLI distribution"
   homepage "https://github.com/zoe-llc/crewent"
-  url "https://github.com/zoe-llc/crewent/releases/download/cli-v0.1.0/crewent-cli-0.1.0.tgz"
-  sha256 "c7c5c1d70c5dec4416ab6158afd0b223ef40c29b1dc1f97ed9428b94d4cadb1c"
+  url "https://github.com/zoe-llc/crewent/releases/download/cli-v0.1.1/crewent-cli-0.1.1.tgz"
+  sha256 "a62c75ed778b49a15a6fbf440592aecb04f98f756af058d5b21641e4b6f88325"
   license :cannot_represent
-  disable! date: "2026-10-21", because: "has no activated internal 0.1.0 distribution"
+
+  bottle do
+    root_url "https://ghcr.io/v2/zoe-llc/crewent"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "7ecfeccdf77715a621be551fe134ce5e84319152b6b907a262f568d7da6b6f69"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "175e73777ffff4382f8d125d747fd30362972719d480c61d08a6de250da63ed0"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "466c8ded34b33377e103a588aca01319c9bbdbb4d959e8bea59079a543006951"
+  end
 
   depends_on "node@22"
 
