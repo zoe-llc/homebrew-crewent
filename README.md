@@ -1,24 +1,38 @@
 # homebrew-crewent
 
-Crewent CLI の Formula-only Homebrew Tap です。Formula と credential-free な検証 metadata を匿名で配布し、bottle payload は private GHCR に保持します。Tap の公開は Crewent source、Release asset、CLI 自体の一般公開、OSS 化、公開ライセンス付与を意味しません。
+Crewent CLI の public Homebrew Tap です。2026-10-25 現在、Formula と public GHCR bottle を匿名で配布しています。
 
-## 現在の状態
+## Install
 
-2026-10-21 時点では repository ID `1414534332` を維持した public Formula-only Tap として準備済みです。Release、tag、GHCR package、実 canary、stable Formula promotion は実施していません。
+GitHub account、Organization membership、PAT は不要です。
 
-未公開の `cli-v0.1.0` asset URL を Homebrew が取得して 404 に進まないよう、現在の Formula は `disable!` で未提供状態を明示します。3 target bottle、private GHCR access、distribution / product canary、全10 Gateの証拠が揃った candidate PR を明示的に mergeするときだけ、この停止を解除します。
+```sh
+brew install zoe-llc/crewent/crewent
+crewent --version
+```
 
-tracked code が保持する実行面は secret-free な `.github/workflows/validate.yml` だけで、repository secret は 0 件です。次の capability は private [`zoe-llc/crewent-distribution`](https://github.com/zoe-llc/crewent-distribution) が所有します。
+現在の stable version は `0.1.1`、対応 target は Apple Silicon macOS、Linux x86_64、Linux ARM64 です。Intel macOS と Windows は現在の bottle 対象外です。
 
-- private source Release の読み取り
-- 3 target bottle の build と private GHCR publish
-- public Tap candidate の draft PR 作成
-- macOS ARM64、Linux x86_64、Linux ARM64 の distribution canary
-- final activation evidence の検証と draft PR の更新
+Tap を登録済みの環境では短い名前も使えます。
 
-public化後の Tap は repository secret、package permission、protected Actions artifact、private App key、GHCR credential、mutation workflow を持ちません。stable Formula PR の merge は自動化しません。
+```sh
+brew tap zoe-llc/crewent
+brew install crewent
+```
 
-## ローカル検証
+fresh environment で最初から `brew install crewent` だけを使うには、Formula の `homebrew/core` 採用が必要です。現在の custom Tap は fully-qualified command が初回の正式な install coordinate です。詳細は [Homebrew installation](docs/operations/homebrew-installation.md) を参照してください。
+
+## Public boundary
+
+- public: この Tap の Formula / verification metadata、GHCR の compiled bottle
+- private: original TypeScript repository、Git history、distribution automation、private Release access
+- license: public bottle は取得・閲覧・解析できますが、CLI は `UNLICENSED` のままであり、OSS 化や利用・改変・再配布許諾を意味しません
+
+public bottle には readable compiled JavaScript が含まれます。source repository が private でも、compiled implementation を秘密として扱うことはできません。
+
+この repository は Formula-only read surface です。repository secret、package write permission、protected build artifact、private App key、mutation workflow を持ちません。bottle build / publish、anonymous 3-target canary、candidate PR 作成は private `zoe-llc/crewent-distribution` が所有します。
+
+## Local validation
 
 ```sh
 find test Formula -name '*.rb' -print0 | xargs -0 -n1 ruby -c
@@ -28,4 +42,7 @@ actionlint
 git diff --check
 ```
 
-認証境界と将来の利用手順は [Public Tap / private GHCR access](docs/operations/public-tap-private-ghcr.md)、canary と promotion の所有権は [運用手順](docs/operations/canary-and-promotion.md)、復旧は [Rollback](docs/operations/rollback.md) を参照してください。実 Activation の未達条件は [consumer activation evidence](docs/verification/consumer-activation.md) にあります。
+- [Homebrew installation](docs/operations/homebrew-installation.md)
+- [Canary and promotion](docs/operations/canary-and-promotion.md)
+- [Consumer activation evidence](docs/verification/consumer-activation.md)
+- [Rollback](docs/operations/rollback.md)

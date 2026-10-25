@@ -1,44 +1,27 @@
-# Public Tap / private GHCR consumer activation evidence
+# Public Homebrew consumer activation evidence
 
 ## 判定
 
-2026-10-21 時点: **準備実装 PASS / 実 Activation BLOCKED / stable Formula disabled**。
+2026-10-25: **PASS**。
 
-## 準備済みの境界
+`cli-v0.1.1` と同一 identity の public GHCR bottle を、GitHub / GHCR credential なしで install できる。public Tap PR #16 は main SHA `3225c8e22abf13b3702433d6703be176ce543620` として merge 済み。
 
-- public Tap は `Formula/crewent.rb`、公開文書、secret-free `validate.yml` だけを所有し、compatibility Formula / rename metadata を持たない。
-- stable Formula は未公開の source artifact URL を保持するが、`disable!` により install を download 前に停止する。存在しない artifact の 404 を利用者向け availability 表示にしない。
-- workflow policy test は追加 workflow、write / package permission、secret参照、artifact transfer、mutationを拒否する。
-- manual public smoke は repository ID、public visibility、default branch、exact main SHA、raw Formula digest、anonymous `git clone --no-tags`、anonymous `brew tap` を検証する。
-- private source read、bottle build / publish、private GHCR read-back、candidate draft PR、3 target distribution canary、final activation検証は private `zoe-llc/crewent-distribution` が所有する。
-- Tap Publisherとsource Readerは別GitHub Appで、stable PRをworkflowからmergeしない。
+## Evidence
 
-ローカル証拠:
+- bottle build / publish run: `40167142836` — success
+- anonymous macOS ARM64 / Linux x86_64 / Linux ARM64 lifecycle canary run: `40170841752` — success
+- public Tap validation run: `40171812892` — success
+- stable consumer: `brew install zoe-llc/crewent/crewent`、`crewent --version` = `0.1.1`、`crewent --help` — PASS
 
-```sh
-find test Formula -name '*.rb' -print0 | xargs -0 -n1 ruby -c
-for test_file in test/*_test.rb; do ruby -Itest "$test_file"; done
-actionlint
-! rg -n 'secrets\.|packages:|upload-artifact|download-artifact|pull_request_target' .github/workflows
-git diff --check
-```
+| target | bottle SHA-256 |
+| --- | --- |
+| `arm64_sequoia` | `7ecfeccdf77715a621be551fe134ce5e84319152b6b907a262f568d7da6b6f69` |
+| `arm64_linux` | `175e73777ffff4382f8d125d747fd30362972719d480c61d08a6de250da63ed0` |
+| `x86_64_linux` | `466c8ded34b33377e103a588aca01319c9bbdbb4d959e8bea59079a543006951` |
 
-ローカル検証は実 Activation の代替ではありません。
+## Scope
 
-## 未実行の外部 gate
-
-- Tap 全履歴・Actions log / artifact・issue / PR・author metadata の公開前監査
-- repository ID `1414534332`、public visibility、secret inventory 0件の継続read-back
-- source Immutable Release と3 target private GHCR bottle
-- package permission inheritance無効化、private visibility、private automation link、public Tap access不在
-- tag / digest双方のanonymous pull拒否と用途分離したapproved reader成功
-- public Tap candidate draft PRとexact head SHA
-- macOS ARM64、Linux x86_64、Linux ARM64の実distribution canary
-- 全10 Gate `PASS` のfinal activation window
-- stable Formula PRのCI、review、明示merge
-
-これらは実 run ID、exact SHA / digest、artifact URLを取得してから別のPhase 0 evidenceへ記録します。Windows / WSL2は初回blocking targetではなく未検証です。
-
-`disable!` の解除は、上記の全10 Gateが同じ release identityで `PASS` になった candidate Formula PRの一部としてだけ行います。
-
-public Tap の `validate.yml` は、`disable!` ありの stable 未Activation Formula を許可し、`disable!` なしの Formula には bottle metadata・3環境 distribution canary・activation authorization の credential-free evidence が exact 一致した場合だけ PASS します。単独の文書更新、source Release作成、bottleの一部成功では解除しません。
+- Product A/B/C canary は別 gateであり、PENDING / UNVERIFIED。
+- Intel macOS と Windows は未対応。
+- original TypeScript repository は private。ただし public bottle の compiled JavaScript は誰でも取得・解析できる。
+- fresh environment の bare `brew install crewent` は未提供。Tap 登録済みなら `brew install crewent` を利用できる。

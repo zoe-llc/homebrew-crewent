@@ -1,36 +1,28 @@
 # 3環境 distribution canary と stable promotion
 
-## 所有権と状態
+## Ownership
 
-canary と promotion workflow の正本は private [`zoe-llc/crewent-distribution`](https://github.com/zoe-llc/crewent-distribution) です。public Tap は workflow、secret、private artifact、package permission を持ちません。
+canary と promotion workflow の正本は private `zoe-llc/crewent-distribution`。public Tap は Formula と credential-free metadata だけを保持し、workflow secret、private artifact、package write permission を持たない。
 
-2026-10-17 時点では workflow 契約だけが準備済みです。Tap は private のままで、旧source Reader secret 3件もsettingsに残っています。source Release、private GHCR bottle、candidate PR、実 canary、stable promotion は未実行です。secret削除とautomation側へのcredential設定は、別の明示承認まで行いません。
+## Current state
 
-## candidate と canary
+0.1.1 は次を完了している。
 
-private automation の promotion `stage` は exact version / source SHA / authorization SHA / bottle run ID を検証し、candidate Formula と credential-free bottle metadata だけを Tap の candidate branch へ commitして draft PR を作ります。stable `main` を直接変更せず、PR を merge しません。
+- exact source Release と 3 target bottle build / public GHCR publish
+- macOS ARM64、Linux x86_64、Linux ARM64 の anonymous manifest / blob / install lifecycle canary
+- activation authorization の検証
+- public Tap PR #16 の merge と stable Formula validation
 
-canary は draft PR number と exact 40-hex head SHA を追加で受け取り、次の3 targetを検証します。
+dedicated Product A/B/C canary は別の製品機能 gate として PENDING / UNVERIFIED のまま。Homebrew 配布の PASS へ読み替えず、Homebrew promotion を block する同一 gate にも戻さない。
 
-| target | runner |
-| --- | --- |
-| `macos-arm64` | `macos-15` |
-| `linux-x86_64` | `ubuntu-24.04` |
-| `linux-arm64` | `ubuntu-24.04-arm` |
+## Next release
 
-各 runner は `GH_TOKEN`、`GITHUB_TOKEN`、`HOMEBREW_GITHUB_API_TOKEN` と GitHub Authorization extraheader がない状態で public Tap candidate SHA を `--no-tags` cloneします。Formula digest一致後の private bottle install stepだけが `CLI_GHCR_READ_USER` / `CLI_GHCR_READ_TOKEN` を受け取り、install、command、uninstall、reinstall、clean rollbackを閉じます。
+1. private automation が新しい exact version / source SHA / authorization SHA から 3 bottle を build する。
+2. publisher identity で package visibility `public`、manifest identity、3 blob digest を read back する。
+3. candidate PR の exact head を使い、GitHub / GHCR credential を unset した 3 target canary を実行する。
+4. activation record は public Tap / GHCR の匿名到達性、3 target lifecycle、rollback window を検証する。
+5. local Tap contract test と必要な validation が green の場合だけ、人が stable PR merge を判断する。
 
-## final evidence と stable PR
+workflow は PR を merge しない。別 run、別 candidate、別 SHA の artifact で代替せず、既存 GHCR version tag を上書きしない。
 
-promotion `finalize` は exact bottle run、distribution canary run、draft PR / head SHA、3 target matrixを再検証します。source Reader Appは source `Contents: read`だけ、Tap Publisher Appは Tap candidate branchとPRだけに限定します。全10 Gateが `PASS` の final activation windowを検証した場合だけ、credential-free evidenceを同じ draft branchへ追加します。
-
-workflowは draft PRをready化またはmergeしません。stable Formulaは、人が差分・CI・activation evidenceを確認して通常のPR mergeを明示実施するまで変わりません。
-
-## 失敗時
-
-- 別 run、別 candidate、別 SHA のartifactで代替しない。
-- credential付き Tap clone、public GHCR、consumer source buildへfallbackしない。
-- 一targetでも失敗したら新しい run IDで3 targetすべてを再実行する。
-- draft PR作成後に identity が変わった場合は既存PRを閉じ、新しい candidateからやり直す。
-
-rollbackは [Rollback](rollback.md) に従い、Release assetやbottleを削除しません。
+rollback は [Rollback](rollback.md) に従い、Release assetやbottleを削除しない。
