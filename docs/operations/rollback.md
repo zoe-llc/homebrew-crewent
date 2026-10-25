@@ -33,7 +33,7 @@ crewent --version
 ```
 
 5. uninstall、reinstall、clean rollbackを再確認し、3環境が揃った時点で配布rollbackを完了とする。
-6. 総合提供判定では、同じrelease identityを参照するsource側の製品canaryも別gateとして確認する。
+6. Product A/B/C canaryは同じrelease identityを参照する独立した製品機能gateとしてPENDING / UNVERIFIEDを保持するが、Homebrew配布rollbackの完了条件には含めない。
 
 一部環境だけをpromoteまたはrollbackしてはならない。bottle欠落やdigest driftがある場合はsource fallbackへ
 切り替えず、stableを直前verified commitへ戻す。
