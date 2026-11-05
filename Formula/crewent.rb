@@ -6,15 +6,15 @@ require "json"
 class Crewent < Formula
   desc "Internal CLI distribution"
   homepage "https://github.com/zoe-llc/crewent"
-  url "https://github.com/zoe-llc/crewent/releases/download/cli-v0.1.1/crewent-cli-0.1.1.tgz"
-  sha256 "a62c75ed778b49a15a6fbf440592aecb04f98f756af058d5b21641e4b6f88325"
+  url "https://github.com/zoe-llc/crewent/releases/download/cli-v0.1.2/crewent-cli-0.1.2.tgz"
+  sha256 "676937ad833039479a814d3bd0c7a8eb479fbcefb94352c04372b621cb9025a8"
   license :cannot_represent
 
   bottle do
     root_url "https://ghcr.io/v2/zoe-llc/crewent"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "7ecfeccdf77715a621be551fe134ce5e84319152b6b907a262f568d7da6b6f69"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "175e73777ffff4382f8d125d747fd30362972719d480c61d08a6de250da63ed0"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "466c8ded34b33377e103a588aca01319c9bbdbb4d959e8bea59079a543006951"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "7cf2148e2ed7030a57cf1b01acf192f32938a003d62ff3487ad896caec39f385"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "8bbd757c1060d0d2ce38cbea13d9fb39aa09f32b28d738de186b6755ba9d7cac"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "9adaa4a3073902569f721ddb14e45299247c49d614e2c8d7541441712e78445c"
   end
 
   depends_on "node@22"
@@ -44,7 +44,7 @@ class Crewent < Formula
       odie "package command path is unsafe" unless safe_parts
       entry = libexec.join(*parts).cleanpath
       odie "package command escapes libexec" unless entry.to_s.start_with?("#{libexec}/")
-      (bin/command).write_env_script entry, PATH: formula_opt_bin("node@22")
+      (bin/command).write_env_script entry, PATH: "#{formula_opt_bin("node@22")}:$PATH"
     end
   end
 
