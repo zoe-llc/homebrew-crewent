@@ -37,6 +37,7 @@ jobs:
           ruby -Itest test/compatibility_metadata_test.rb
           ruby -Itest test/formula_policy_test.rb
           ruby -Itest test/public_repository_policy_test.rb
+          ruby -Itest test/verify_formula_activation_policy_test.rb
 
       - name: Verify Formula activation policy
         run: ruby scripts/verify_formula_activation_policy.rb

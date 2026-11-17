@@ -63,6 +63,25 @@ class VerifyFormulaActivationPolicyTest < Minitest::Test
     end
   end
 
+  def test_activation_evidence_accepts_only_the_exact_automation_bot
+    candidate = bottle_candidate(source_formula_sha256: "1" * 64, candidate_formula_sha256: "2" * 64)
+    approval = {
+      "schema" => "crewent.homebrew-activation-authorization/v1",
+      "version" => candidate.fetch("version"),
+      "sourceSha" => candidate.fetch("sourceSha"),
+      "releaseAuthorizationSha" => candidate.fetch("authorizationSha"),
+      "activationAuthorizationSha" => "b" * 40,
+      "startsAt" => "2026-11-17T08:00:00Z",
+      "endsAt" => "2026-11-17T09:00:00Z",
+      "rollbackPoint" => "cli-v0.1.0"
+    }
+    policy = PublicTap::FormulaActivationPolicy
+    policy.verify_activation_authorization!(approval.merge("executor" => "github:github-actions[bot]"), candidate: candidate)
+    assert_raises(PublicTap::FormulaActivationPolicyError) do
+      policy.verify_activation_authorization!(approval.merge("executor" => "github:other[bot]"), candidate: candidate)
+    end
+  end
+
   private
 
   def disabled_formula
