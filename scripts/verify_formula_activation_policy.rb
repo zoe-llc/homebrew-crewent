@@ -172,7 +172,7 @@ module PublicTap
       if value.fetch("releaseAuthorizationSha") == value.fetch("activationAuthorizationSha")
         fail!("activation authorization must be distinct from release authorization")
       end
-      pattern!(value.fetch("executor"), /\Agithub:[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})\z/, "activation-authorization.executor")
+      pattern!(value.fetch("executor"), /\Agithub:(?:[A-Za-z0-9][A-Za-z0-9-]{0,38}|github-actions\[bot\])\z/, "activation-authorization.executor")
       %w[startsAt endsAt rollbackPoint].each { |key| require_string!(value.fetch(key), "activation-authorization.#{key}") }
     end
 
