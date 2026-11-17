@@ -6,15 +6,15 @@ require "json"
 class Crewent < Formula
   desc "Internal CLI distribution"
   homepage "https://github.com/zoe-llc/crewent"
-  url "https://github.com/zoe-llc/crewent/releases/download/cli-v0.1.5/crewent-cli-0.1.5.tgz"
-  sha256 "440b592f12a6cf6b281c0f9c53e8fd1c91d0f2c8f92634dea82dec1507148d1e"
+  url "https://github.com/zoe-llc/crewent/releases/download/cli-v0.1.13/crewent-cli-0.1.13.tgz"
+  sha256 "eea7b7a455c5aed69f3fea85381e676e168ea2b5b599574e7f1d8b36fe23bd89"
   license :cannot_represent
 
   bottle do
     root_url "https://ghcr.io/v2/zoe-llc/crewent"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "2ff2add827d2512f580d4451e045b3ef7abec1c9ffc705f1b2b5937c27025daf"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "ab9049643a649a9cc69bf9041e3918c309fe69dd2dc9fa577f6edf592c38e1c1"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "d29108e900206401f67074179bc42f7a9d782952cce3a442f0a53046d1d14d50"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "4a573b56c30019b2e28957134c0fe50f08542c1ffcf74bfbe43d571d3f5c2a5b"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "a8902556abfa111e7f16e545602555552e7747d17a550202e74f24d526b479c7"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "b4ba9c2dca3095db0e894ed1e683f5567178a69f212cd68a5db1840acc1565cb"
   end
 
   depends_on "node@22"
@@ -46,10 +46,19 @@ class Crewent < Formula
       odie "package command escapes libexec" unless entry.to_s.start_with?("#{libexec}/")
       (bin/command).write_env_script entry, PATH: "#{formula_opt_bin("node@22")}:$PATH"
     end
+
+    command_aliases = ["crw"]
+    command_aliases.each do |command_alias|
+      odie "package command alias conflicts with a package command" if bin_map.key?(command_alias)
+      relative = bin_map.fetch("crewent")
+      entry = libexec.join(*relative.delete_prefix("./").split("/")).cleanpath
+      (bin/command_alias).write_env_script entry, PATH: "#{formula_opt_bin("node@22")}:$PATH"
+    end
   end
 
   test do
     assert_match version.to_s, shell_output("#{bin}/crewent --version")
     assert_match "Usage:", shell_output("#{bin}/crewent --help")
+    assert_match version.to_s, shell_output("#{bin}/crw --version")
   end
 end
