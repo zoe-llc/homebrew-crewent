@@ -7,15 +7,15 @@ require "shellwords"
 class Crewent < Formula
   desc "Internal CLI distribution"
   homepage "https://github.com/zoe-llc/crewent"
-  url "https://github.com/zoe-llc/crewent/releases/download/cli-v0.1.19/crewent-cli-0.1.19.tgz"
-  sha256 "bbb63a6869293dd004f6dec08bda90f52da7d5609b4c9f1484eebe6798f28028"
+  url "https://github.com/zoe-llc/crewent/releases/download/cli-v0.1.25/crewent-cli-0.1.25.tgz"
+  sha256 "b6c4191a5ea969a827544005a826e6c61459af7b6a69ac3eed9843627e029a14"
   license :cannot_represent
 
   bottle do
     root_url "https://ghcr.io/v2/zoe-llc/crewent"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "e1989e8dcf2e59a8e12d80dc364c348977f10f21aca44679494cbff2e2f01ade"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "33fb7880c7957f73dcd26be22f629e175f0de5a8b6e3ce015321385cff7a8454"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "e7de53a41c7ca789ad61d93050f5ea18b2ef41fcf77f708d2edb3c71990badcb"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "6d79b44d4cfd068ab6edf448fa0d9d2dca99b8d2e1d7bc8833195662ad5b2f58"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "77b73bceb632eff76e0f18dc19ecc0588d6cb040c310c79fcfb7cd7a0441e0a8"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "bc212609b722fcb54997ca420ee78403025429372d874c30e9ee5c947f2344f9"
   end
 
   depends_on "node@22"
@@ -39,6 +39,7 @@ class Crewent < Formula
     expected_commands.each do |command|
       relative = bin_map.fetch(command)
       odie "package command path is unsafe" unless relative.is_a?(String)
+
       parts = relative.delete_prefix("./").split("/")
       safe_parts = parts.any? && parts.none? do |part|
         part.empty? || part == "." || part == ".." || !part.match?(/\A[A-Za-z0-9_.-]+\z/)
