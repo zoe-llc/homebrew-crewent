@@ -7,15 +7,15 @@ require "shellwords"
 class Crewent < Formula
   desc "Internal CLI distribution"
   homepage "https://github.com/zoe-llc/crewent"
-  url "https://github.com/zoe-llc/crewent/releases/download/cli-v0.1.25/crewent-cli-0.1.25.tgz"
-  sha256 "b6c4191a5ea969a827544005a826e6c61459af7b6a69ac3eed9843627e029a14"
+  url "https://github.com/zoe-llc/crewent/releases/download/cli-v0.1.26/crewent-cli-0.1.26.tgz"
+  sha256 "027f12433a59958a470d34993ebffb55dfdba80d6f1ba340fb236a2b64352de1"
   license :cannot_represent
 
   bottle do
     root_url "https://ghcr.io/v2/zoe-llc/crewent"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "6d79b44d4cfd068ab6edf448fa0d9d2dca99b8d2e1d7bc8833195662ad5b2f58"
-    sha256 cellar: :any_skip_relocation, arm64_linux:   "77b73bceb632eff76e0f18dc19ecc0588d6cb040c310c79fcfb7cd7a0441e0a8"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "bc212609b722fcb54997ca420ee78403025429372d874c30e9ee5c947f2344f9"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "263db5bcb985804fe4de4415f372059b97074b6c6222c423ccaccee29e7e19f2"
+    sha256 cellar: :any_skip_relocation, arm64_linux:   "149e420b8030d770efc24eebadfb713477e123cb15c814c14e9750e7a882b322"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "f892561be369f711e84252cb35397a82257594adaaff66962f2a99cb2181eea3"
   end
 
   depends_on "node@22"

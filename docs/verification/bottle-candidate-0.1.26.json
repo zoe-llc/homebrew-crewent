@@ -1,0 +1,17 @@
+{
+  "schema": "crewent.homebrew-bottle-candidate/v1",
+  "version": "0.1.26",
+  "sourceSha": "36e0735ab147072e50cb5aede04cd307a598258a",
+  "authorizationSha": "7f4839ae6a8a160d06bb175484c80016a4bfaad0",
+  "artifactSha256": "027f12433a59958a470d34993ebffb55dfdba80d6f1ba340fb236a2b64352de1",
+  "manifestSha256": "8841d27e04b9e04a02c85808a41b5313222a94048da46effdf23bfe03f05c0dd",
+  "sourceFormulaSha256": "7b0060a9f3f920352bc0b7c67356fcdc7e6ef9febf384a5055ae92ac65e6bfc7",
+  "candidateFormulaSha256": "cadc5d9e618481dccdaaeac7a8991368f2deb0cb43368ce11933a991c33e73d8",
+  "bottleMatrixSha256": "3070a4f91c9a9d37229ea2ced417cbf75ed82d7a2219e7848f1f4b7878967d8a",
+  "bottleRunId": "45931808096",
+  "bottleRunAttempt": 1,
+  "automationWorkflowSha": "c532c09c41eff7e7d0560c39755aaf6adf745e56",
+  "workflowPath": ".github/workflows/bottle.yml",
+  "workflowEvent": "workflow_dispatch",
+  "workflowBranch": "main"
+}
